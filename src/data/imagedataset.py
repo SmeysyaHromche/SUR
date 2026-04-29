@@ -1,4 +1,6 @@
 import torch
+import numpy as np
+
 from torch.utils.data import Dataset
 from pathlib import Path
 
@@ -20,9 +22,8 @@ class ImageDataset(SurDataset, Dataset):
     def __getitem__(self, idx: int):
         img_path, label = self.samples[idx]
 
-        image = self.image_helper.preprocessing(str(img_path.resolve()))
-
-        image = torch.from_numpy(image).unsqueeze(0).float()
+        img_features = self.image_helper.feature_extraction(str(img_path.resolve()), True)
+        
         label = torch.tensor(label, dtype=torch.long)
 
-        return DataSample(image, None, label)
+        return DataSample(img_features, None, label)

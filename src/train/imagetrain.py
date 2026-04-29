@@ -22,11 +22,6 @@ class ImageTrain():
                 num_workers= 4,
                 collate_fn = dataset.collate_datasamples
             )
-            i = 0
             for data_sample in dataloader:
-                print(f'i{i}')
-                print(data_sample.image)
-                print(data_sample.audio)
-                print(data_sample.label)
-                i += 1
+                print(data_sample.image.shape)
             break
