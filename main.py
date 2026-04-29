@@ -1,5 +1,6 @@
 import argparse
-from src import Train
+from src import Train, ImageTrain, TrainConfig
+from pathlib import Path
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -18,10 +19,11 @@ def parse_args():
 def main():
     args = parse_args()
     if args.t:
-        train = Train()
-        train.train(args.path_to_config)
+        train = Train(args.path_to_config)
+        train.train()
     else:
         pass
+
 
 if __name__ == "__main__":
     main()

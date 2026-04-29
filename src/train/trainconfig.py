@@ -4,3 +4,4 @@ class TrainConfig(BaseModel):
     model: str
     data_path: str
     epochs: int
+    batch_size: int
