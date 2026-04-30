@@ -15,7 +15,7 @@ from sklearn.svm import LinearSVC
 
 class ImageBinaryClassifier:
 
-    def __init__(self, n_components=0.8, C=0.8):
+    def __init__(self, n_components=0.9, C=0.8):
         self.model = Pipeline([
             ("scaler", StandardScaler()),
             ("pca", PCA(n_components=n_components, random_state=42)),
