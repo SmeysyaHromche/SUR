@@ -76,11 +76,5 @@ class ImageHelper:
 
         # feature extraction
         img_to_hog = self._hog(img)
-        img_to_lbp = self._lbp(img)
-
-        img_features = np.concatenate([
-            img_to_hog.ravel(),
-            img_to_lbp.ravel()
-        ])
-
-        return img_features
+        
+        return img_to_hog
