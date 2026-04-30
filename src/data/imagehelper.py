@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 
 from skimage.feature import hog
-from skimage.feature import local_binary_pattern
 
 
 class ImageHelper:
@@ -39,26 +38,7 @@ class ImageHelper:
             block_norm="L2-Hys",
             visualize=False
         )
-    
-    def _lbp(self, img):
-        radius = 2
-        n_points = 16 * radius  # 16
 
-        lbp = local_binary_pattern(
-            img,
-            n_points,
-            radius,
-            method="uniform"
-        )
-        
-        hist, _ = np.histogram(
-            lbp.ravel(),
-            bins=n_points + 2,
-            range=(0, n_points + 2),
-            density=True
-        )
-
-        return hist
 
     def feature_extraction(self, img_path: str, is_augmentation: bool):
         img = cv2.imread(img_path)
