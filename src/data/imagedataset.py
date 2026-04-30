@@ -1,13 +1,10 @@
-import torch
 import numpy as np
 
 from torch.utils.data import Dataset
 from pathlib import Path
 
-from .datasample import DataSample
 from .surdataset import SurDataset
 from .imagehelper import ImageHelper
-
 
 class ImageDataset(SurDataset, Dataset):
     PNG_FORMAT = ".png"
@@ -19,11 +16,23 @@ class ImageDataset(SurDataset, Dataset):
     def get_expected_data_format(self) -> str:
         return self.PNG_FORMAT
 
-    def __getitem__(self, idx: int):
-        img_path, label = self.samples[idx]
+    def feature_extarction_from_dataset(self, is_train):
+        X = []
+        y = []
 
-        img_features = self.image_helper.feature_extraction(str(img_path.resolve()), True)
-        
-        label = torch.tensor(label, dtype=torch.long)
+        for idx in range(len(self)):
+            img_path, label = self.samples[idx]
+            cnt_of_sample = 3 if label and is_train else 1
+            for _ in range(cnt_of_sample):
+                img_features = self.image_helper.feature_extraction(
+                    str(img_path.resolve()),
+                    is_train
+                )
 
-        return DataSample(img_features, None, label)
+                X.append(img_features)
+                y.append(label)
+
+        X = np.asarray(X, dtype=np.float32)
+        y = np.asarray(y, dtype=np.int64)
+
+        return X, y

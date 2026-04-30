@@ -3,8 +3,6 @@ import torch
 
 from pathlib import Path
 
-from .datasample import DataSample
-
 class SurDataset:
 
     def __init__(self, meta_dataset: Path):
@@ -41,20 +39,3 @@ class SurDataset:
 
     def __len__(self) -> int:
         return self.len
-
-    def __getitem__(self, idx: int):
-        path, label = self.samples[idx]
-        return path, label
-    
-    @staticmethod
-    def collate_datasamples(batch):
-        images = None
-        if batch[0].image is not None:
-            images = torch.stack([sample.image for sample in batch])
-        
-        audios = None
-        if batch[0].audio is not None:
-            audios = torch.stack([sample.audio for sample in batch])
-        labels = torch.stack([sample.label for sample in batch])
-
-        return DataSample(images, audios, labels)
