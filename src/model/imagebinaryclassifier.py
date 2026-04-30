@@ -10,9 +10,6 @@ from sklearn.svm import LinearSVC
 # F1-scroe: how good model (0: bad, 1: goat)
 
 
-# C: [0, 1] light, [1, 10] hard
-# class_weight: balacned 
-
 class ImageBinaryClassifier:
 
     def __init__(self, n_components=0.9, C=0.8):
@@ -21,7 +18,7 @@ class ImageBinaryClassifier:
             ("pca", PCA(n_components=n_components, random_state=42)),
             ("svm", LinearSVC(
                 C=C,
-                class_weight="balanced",
+                class_weight={0: 1, 1: 2},
                 max_iter=10000,
                 random_state=42
             ))
