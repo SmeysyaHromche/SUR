@@ -1,11 +1,13 @@
+import joblib
 from pathlib import Path
 from sklearn.metrics import classification_report, f1_score
 
+from .basepipeline import BasePipeline
 from .trainconfig import TrainConfig
 from src.data import ImageDataset
 from src.model import ImageBinaryClassifier
 
-class ImageTrain():
+class ImageTrain(BasePipeline):
 
     def __init__(self, config:TrainConfig):
         self.config = config
@@ -15,7 +17,7 @@ class ImageTrain():
     def train(self):
         for i, fold in enumerate(self.folds):
             print("=====================")
-            print(f"Session: {i}")
+            print(f"Fold: {i}")
             print("=====================")
 
             model = ImageBinaryClassifier()
@@ -31,8 +33,13 @@ class ImageTrain():
             model.fit(X_train, y_train)
 
             y_pred = model.predict(X_dev)
-
-            print(classification_report(y_dev, y_pred))
-            print("F1:", f1_score(y_dev, y_pred))
+            
+            log = f"{classification_report(y_dev, y_pred)} \nF1 : {f1_score(y_dev, y_pred)}"
+            print(log)
+            log_name = f"{self.config.out}/log_img_model_fold_{i}.txt"
+            self.store_log(log_name, log)
+            
+            model_name = f"{self.config.out}/img_model_fold_{i}.pkl"
+            joblib.dump(model.model, model_name)
             
             

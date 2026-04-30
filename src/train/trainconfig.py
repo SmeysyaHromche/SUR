@@ -5,3 +5,4 @@ class TrainConfig(BaseModel):
     data_path: str
     epochs: int
     batch_size: int
+    out: str
