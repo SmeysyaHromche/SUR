@@ -2,5 +2,6 @@
     "model": "image",
     "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/image/",
     "epochs": 10,
-    "batch_size": 32
+    "batch_size": 32,
+    "out": "/home/xkukht01/Dev/SUR/out/image/"
 }
