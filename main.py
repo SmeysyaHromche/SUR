@@ -1,6 +1,5 @@
 import argparse
-from src import Train, ImageTrain, TrainConfig
-from pathlib import Path
+from src import Train
 
 def parse_args():
     parser = argparse.ArgumentParser(
