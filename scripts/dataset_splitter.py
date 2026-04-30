@@ -4,7 +4,7 @@ import csv
 import shutil
 
 from pathlib import Path
-from sklearn.model_selection import GroupShuffleSplit
+from sklearn.model_selection import StratifiedGroupKFold
 from typing import Tuple, List
 
 DATA_DIRS = [
@@ -19,7 +19,7 @@ TARGET_ID = "m431"
 OUTPUT_DIR = "/home/xkukht01/Dev/SUR/data/sur_data"
 
 DEV_SIZE = 0.25
-N_SPLITS = 5
+N_SPLITS = 3
 RANDOM_STATE = 42
 
 
@@ -27,14 +27,14 @@ IMAGE_EXTS = {".png"}
 AUDIO_EXTS = {".wav"}
 
 def clear_output_dir(path: Path) -> None:
-    '''
+    """
     Clean target directory
 
     Args:
         path: target directory
     
     Returns: None
-    '''
+    """
     if not path.exists():
         return
 
@@ -48,7 +48,7 @@ def clear_output_dir(path: Path) -> None:
 
 
 def parse_filename(path: Path) -> Tuple[str, str]:
-    '''
+    """
     Parse filename
 
     Args:
@@ -56,7 +56,7 @@ def parse_filename(path: Path) -> Tuple[str, str]:
     
     Returns:
         pair in format ( PERSON_ID, SESSION_ID) 
-    '''
+    """
     parts = path.stem.split("_")
 
     if len(parts) < 2:
@@ -70,7 +70,7 @@ def parse_filename(path: Path) -> Tuple[str, str]:
 
 
 def collect_files() -> Tuple[List[str], List[str]]:
-    '''
+    """
     Collect and split files based on data type
     
     Args:
@@ -78,7 +78,7 @@ def collect_files() -> Tuple[List[str], List[str]]:
     
     Returns:
         pair of lists [IMAGE_DATA, AUDIO_DATA]
-    '''
+    """
     image_samples = []
     audio_samples = []
 
@@ -117,7 +117,7 @@ def collect_files() -> Tuple[List[str], List[str]]:
 
 
 def write_csv(path: Path, samples:List[str]) -> None:
-    '''
+    """
     Store metadata of samples in csv file in format:
         absolute/path/to/file, label
     
@@ -129,7 +129,7 @@ def write_csv(path: Path, samples:List[str]) -> None:
 
     Returns:
         None
-    '''
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -143,15 +143,15 @@ def write_csv(path: Path, samples:List[str]) -> None:
             ])
 
 
-def create_group_splits(samples: List[str], output_subdir: Path) -> None:
-    '''
+def create_group_splits(samples, output_subdir: Path) -> None:
+    """
     Split samples of data to diff groups (in each group on div, train files) for 
     cross validation.
 
     Args:
         samples: list of paths to data
         output_subdir: path to group data location
-    '''
+    """
     if not samples:
         print(f"Error! No samples for {output_subdir}")
         return
@@ -160,13 +160,14 @@ def create_group_splits(samples: List[str], output_subdir: Path) -> None:
     labels = [s["target"] for s in samples]
     groups = [s["group"] for s in samples]
 
-    splitter = GroupShuffleSplit(
+    splitter = StratifiedGroupKFold(
         n_splits=N_SPLITS,
-        test_size=DEV_SIZE,
+        shuffle=True,
         random_state=RANDOM_STATE,
     )
 
     for fold_id, (train_idx, dev_idx) in enumerate(splitter.split(seq_id, labels, groups)):
+        print()
         fold_dir = output_subdir / f"fold_{fold_id:02d}"
 
         train_samples = [samples[i] for i in train_idx]
@@ -175,10 +176,10 @@ def create_group_splits(samples: List[str], output_subdir: Path) -> None:
         write_csv(fold_dir / "train.csv", train_samples)
         write_csv(fold_dir / "dev.csv", dev_samples)
 
-        print(
-            f"{output_subdir.name} fold_{fold_id:02d}: "
-            f"train={len(train_samples)}, dev={len(dev_samples)}"
-        )
+        print(f"{output_subdir.name} fold_{fold_id:02d}: ")
+        print(f"train={len(train_samples)}, dev={len(dev_samples)}, ")
+        print(f"train_pos={sum(s['target'] for s in train_samples)}, ")
+        print(f"dev_pos={sum(s['target'] for s in dev_samples)}")
 
 if __name__ == "__main__":
     output_dir = Path(OUTPUT_DIR)
