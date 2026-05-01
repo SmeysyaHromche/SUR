@@ -3,7 +3,6 @@
 
 import csv
 import shutil
-import argparse
 
 from pathlib import Path
 from sklearn.model_selection import StratifiedGroupKFold, GroupKFold
@@ -166,38 +165,12 @@ def create_total_csv(samples: List[Dict[str, Any]], output_path: Path) -> None:
 def split_by_target(
     samples: List[Dict[str, Any]],
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    positive_samples = [s for s in samples if s["target"] == 1]
-    negative_samples = [s for s in samples if s["target"] == 0]
+    target_samples = [s for s in samples if s["target"] == 1]
+    nontarget_samples = [s for s in samples if s["target"] == 0]
 
-    return positive_samples, negative_samples
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Prepare SUR dataset metadata."
-    )
-
-    mode = parser.add_mutually_exclusive_group(required=True)
-
-    mode.add_argument(
-        "-f",
-        "--folds",
-        action="store_true",
-        help="Create cross-validation folds.",
-    )
-
-    mode.add_argument(
-        "-t",
-        "--total",
-        action="store_true",
-        help="Create total.csv files for full training and separate positive/negative folds.",
-    )
-
-    return parser.parse_args()
-
+    return target_samples, nontarget_samples
 
 if __name__ == "__main__":
-    args = parse_args()
 
     output_dir = Path(OUTPUT_DIR)
 
@@ -207,19 +180,15 @@ if __name__ == "__main__":
     print(f"Audio found:  {len(audio_samples)}")
     print()
 
-    if args.folds:
-        create_group_splits(image_samples, output_dir / "image" / "folds")
-        create_group_splits(audio_samples, output_dir / "audio" / "folds")
+    # create split with full dataset for image training
+    create_group_splits(image_samples, output_dir / "image" / "folds")
 
-    elif args.total:
-        create_total_csv(image_samples, output_dir / "image" / "total.csv")
-        create_total_csv(audio_samples, output_dir / "audio" / "total.csv")
+    # split based on label
+    create_total_csv(image_samples, output_dir / "image" / "total.csv")
+    create_total_csv(audio_samples, output_dir / "audio" / "total.csv")
 
-        image_positive, image_negative = split_by_target(image_samples)
-        audio_positive, audio_negative = split_by_target(audio_samples)
+    # split per label for audio training
+    audio_target, audio_nontarget = split_by_target(audio_samples)
 
-        create_group_splits(image_positive, output_dir / "image" / "positive_folds")
-        create_group_splits(image_negative, output_dir / "image" / "negative_folds")
-
-        create_group_splits(audio_positive, output_dir / "audio" / "positive_folds")
-        create_group_splits(audio_negative, output_dir / "audio" / "negative_folds")
+    create_group_splits(audio_target, output_dir / "audio" / "target_folds")
+    create_group_splits(audio_nontarget, output_dir / "audio" / "nontarget_folds")
