@@ -6,3 +6,6 @@ class TrainConfig(BaseModel):
     epochs: int
     batch_size: int
     out: str
+    model_name: str
+    is_full_train: bool
+    is_save_validation_log: bool

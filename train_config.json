@@ -3,5 +3,8 @@
     "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/image/",
     "epochs": 10,
     "batch_size": 32,
-    "out": "/home/xkukht01/Dev/SUR/out/image/"
+    "out": "/home/xkukht01/Dev/SUR/out/image/",
+    "model_name": "A",
+    "is_full_train": true,
+    "is_save_validation_log":true
 }
