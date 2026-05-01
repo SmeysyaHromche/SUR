@@ -18,6 +18,9 @@ class SurDataset:
         Example: ".png" or ".wav"
         """
         raise NotImplementedError("Implement me")
+    
+    def feature_extraction_from_dataset(self, is_train):
+        raise NotImplementedError("Implement me")
 
     def is_valid_data_format(self, file: Path) -> bool:
         return file.is_file() and file.suffix == self.get_expected_data_format()

@@ -1,6 +1,7 @@
 from pathlib import Path
 from .trainconfig import TrainConfig
 from .imagetrain import ImageTrain
+from .audiotrain import AudioTrain
 
 class Train:
 
@@ -17,7 +18,7 @@ class Train:
         if pipe_type == self.IMAGE:
             return ImageTrain(self.config)
         elif pipe_type == self.AUDIO:
-            return None
+            return AudioTrain(self.config)
         else:
             return None
 

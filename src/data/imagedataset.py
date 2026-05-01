@@ -15,7 +15,7 @@ class ImageDataset(SurDataset):
     def get_expected_data_format(self) -> str:
         return self.PNG_FORMAT
 
-    def feature_extarction_from_dataset(self, is_train):
+    def feature_extraction_from_dataset(self, is_train):
         X = []
         y = []
 

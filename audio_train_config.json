@@ -1,0 +1,8 @@
+{
+    "model": "audio",
+    "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/audio/",
+    "out": "/home/xkukht01/Dev/SUR/out/audio/",
+    "model_name": "A",
+    "is_full_train": false,
+    "is_save_validation_log":false
+}
