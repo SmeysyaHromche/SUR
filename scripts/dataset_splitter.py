@@ -6,7 +6,7 @@ import shutil
 import argparse
 
 from pathlib import Path
-from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.model_selection import StratifiedGroupKFold, GroupKFold
 from typing import Tuple, List, Dict, Any
 
 
@@ -93,10 +93,6 @@ def collect_files() -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
 
 
 def write_csv(path: Path, samples: List[Dict[str, Any]]) -> None:
-    """
-    Store metadata of samples in csv file in format:
-        path,target
-    """
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -119,13 +115,26 @@ def create_group_splits(samples: List[Dict[str, Any]], output_subdir: Path) -> N
     labels = [s["target"] for s in samples]
     groups = [s["group"] for s in samples]
 
-    splitter = StratifiedGroupKFold(
-        n_splits=N_SPLITS,
-        shuffle=True,
-        random_state=RANDOM_STATE,
-    )
+    unique_groups = set(groups)
 
-    for fold_id, (train_idx, dev_idx) in enumerate(splitter.split(seq_id, labels, groups)):
+    if len(unique_groups) < N_SPLITS:
+        print(f"Error! Not enough groups for {output_subdir}")
+        print(f"groups={len(unique_groups)}, n_splits={N_SPLITS}")
+        print()
+        return
+
+    if len(set(labels)) == 1:
+        splitter = GroupKFold(n_splits=N_SPLITS)
+        split_iter = splitter.split(seq_id, labels, groups)
+    else:
+        splitter = StratifiedGroupKFold(
+            n_splits=N_SPLITS,
+            shuffle=True,
+            random_state=RANDOM_STATE,
+        )
+        split_iter = splitter.split(seq_id, labels, groups)
+
+    for fold_id, (train_idx, dev_idx) in enumerate(split_iter):
         fold_dir = output_subdir / f"fold_{fold_id:02d}"
 
         train_samples = [samples[i] for i in train_idx]
@@ -154,6 +163,15 @@ def create_total_csv(samples: List[Dict[str, Any]], output_path: Path) -> None:
     print()
 
 
+def split_by_target(
+    samples: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    positive_samples = [s for s in samples if s["target"] == 1]
+    negative_samples = [s for s in samples if s["target"] == 0]
+
+    return positive_samples, negative_samples
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Prepare SUR dataset metadata."
@@ -172,7 +190,7 @@ def parse_args():
         "-t",
         "--total",
         action="store_true",
-        help="Create total.csv files for full training.",
+        help="Create total.csv files for full training and separate positive/negative folds.",
     )
 
     return parser.parse_args()
@@ -196,3 +214,12 @@ if __name__ == "__main__":
     elif args.total:
         create_total_csv(image_samples, output_dir / "image" / "total.csv")
         create_total_csv(audio_samples, output_dir / "audio" / "total.csv")
+
+        image_positive, image_negative = split_by_target(image_samples)
+        audio_positive, audio_negative = split_by_target(audio_samples)
+
+        create_group_splits(image_positive, output_dir / "image" / "positive_folds")
+        create_group_splits(image_negative, output_dir / "image" / "negative_folds")
+
+        create_group_splits(audio_positive, output_dir / "audio" / "positive_folds")
+        create_group_splits(audio_negative, output_dir / "audio" / "negative_folds")
