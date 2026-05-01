@@ -29,7 +29,22 @@ class ImageHelper:
         img = np.clip(img, 0, 255).astype(np.uint8)
         return img
     
-    def _hog(self, img):        
+    def _hog(self, img):
+        """
+        Histogram of Oriented Gradients
+
+        Calculates the gradient for each pixel along the X and Y axes.
+
+        The image is divided into NxM cells, and each cell stores how many gradients point in different orientations.
+
+        Then groups of cells are taken and normalized.
+
+        Finally, flatten is applied to all of this, producing a one-dimensional array of gradients.
+        Args:
+            img: input image
+        Returns:
+            1d HOG representation array
+        """        
         return hog(
             img,
             orientations=9,
@@ -41,7 +56,7 @@ class ImageHelper:
 
 
     def feature_extraction(self, img_path: str, is_augmentation: bool):
-        img = cv2.imread(img_path)
+        img = cv2.imread(img_path)  # [H, W, RGB]
 
         if img is None:
             raise ValueError(f"Could not read image: {img_path}")
@@ -55,6 +70,6 @@ class ImageHelper:
             img = self._augment(img)
 
         # feature extraction
-        img_to_hog = self._hog(img)
+        img_to_hog = self._hog(img)  # [F]
         
         return img_to_hog

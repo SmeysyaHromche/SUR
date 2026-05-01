@@ -1,12 +1,11 @@
 import numpy as np
 
-from torch.utils.data import Dataset
 from pathlib import Path
 
 from .surdataset import SurDataset
 from .imagehelper import ImageHelper
 
-class ImageDataset(SurDataset, Dataset):
+class ImageDataset(SurDataset):
     PNG_FORMAT = ".png"
 
     def __init__(self, meta_dataset: Path):
