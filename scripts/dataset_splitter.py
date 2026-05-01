@@ -1,11 +1,14 @@
 # author: Myron Kukhta (xkukht01)
-# info: splitt original dataset by PERSON x SESSION pair for cross validation
+# info: split original dataset by PERSON x SESSION pair for cross validation
+
 import csv
 import shutil
+import argparse
 
 from pathlib import Path
 from sklearn.model_selection import StratifiedGroupKFold
-from typing import Tuple, List
+from typing import Tuple, List, Dict, Any
+
 
 DATA_DIRS = [
     "/home/xkukht01/Dev/SUR/data/target_train",
@@ -18,23 +21,14 @@ TARGET_ID = "m431"
 
 OUTPUT_DIR = "/home/xkukht01/Dev/SUR/data/sur_data"
 
-DEV_SIZE = 0.25
 N_SPLITS = 3
 RANDOM_STATE = 42
-
 
 IMAGE_EXTS = {".png"}
 AUDIO_EXTS = {".wav"}
 
-def clear_output_dir(path: Path) -> None:
-    """
-    Clean target directory
 
-    Args:
-        path: target directory
-    
-    Returns: None
-    """
+def clear_output_dir(path: Path) -> None:
     if not path.exists():
         return
 
@@ -48,15 +42,6 @@ def clear_output_dir(path: Path) -> None:
 
 
 def parse_filename(path: Path) -> Tuple[str, str]:
-    """
-    Parse filename
-
-    Args:
-        path: path to file
-    
-    Returns:
-        pair in format ( PERSON_ID, SESSION_ID) 
-    """
     parts = path.stem.split("_")
 
     if len(parts) < 2:
@@ -69,16 +54,7 @@ def parse_filename(path: Path) -> Tuple[str, str]:
     return person_id, group_id
 
 
-def collect_files() -> Tuple[List[str], List[str]]:
-    """
-    Collect and split files based on data type
-    
-    Args:
-        None
-    
-    Returns:
-        pair of lists [IMAGE_DATA, AUDIO_DATA]
-    """
+def collect_files() -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     image_samples = []
     audio_samples = []
 
@@ -116,19 +92,10 @@ def collect_files() -> Tuple[List[str], List[str]]:
     return image_samples, audio_samples
 
 
-def write_csv(path: Path, samples:List[str]) -> None:
+def write_csv(path: Path, samples: List[Dict[str, Any]]) -> None:
     """
     Store metadata of samples in csv file in format:
-        absolute/path/to/file, label
-    
-    Where label is 0 when data from target person
-
-    Args:
-        path: path to target csv file
-        sample: list of path to data samples
-
-    Returns:
-        None
+        path,target
     """
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -143,15 +110,7 @@ def write_csv(path: Path, samples:List[str]) -> None:
             ])
 
 
-def create_group_splits(samples, output_subdir: Path) -> None:
-    """
-    Split samples of data to diff groups (in each group on div, train files) for 
-    cross validation.
-
-    Args:
-        samples: list of paths to data
-        output_subdir: path to group data location
-    """
+def create_group_splits(samples: List[Dict[str, Any]], output_subdir: Path) -> None:
     if not samples:
         print(f"Error! No samples for {output_subdir}")
         return
@@ -167,7 +126,6 @@ def create_group_splits(samples, output_subdir: Path) -> None:
     )
 
     for fold_id, (train_idx, dev_idx) in enumerate(splitter.split(seq_id, labels, groups)):
-        print()
         fold_dir = output_subdir / f"fold_{fold_id:02d}"
 
         train_samples = [samples[i] for i in train_idx]
@@ -176,20 +134,65 @@ def create_group_splits(samples, output_subdir: Path) -> None:
         write_csv(fold_dir / "train.csv", train_samples)
         write_csv(fold_dir / "dev.csv", dev_samples)
 
-        print(f"{output_subdir.name} fold_{fold_id:02d}: ")
-        print(f"train={len(train_samples)}, dev={len(dev_samples)}, ")
-        print(f"train_pos={sum(s['target'] for s in train_samples)}, ")
+        print(f"{output_subdir.name} fold_{fold_id:02d}:")
+        print(f"train={len(train_samples)}, dev={len(dev_samples)}")
+        print(f"train_pos={sum(s['target'] for s in train_samples)}")
         print(f"dev_pos={sum(s['target'] for s in dev_samples)}")
+        print()
+
+
+def create_total_csv(samples: List[Dict[str, Any]], output_path: Path) -> None:
+    if not samples:
+        print(f"Error! No samples for {output_path}")
+        return
+
+    write_csv(output_path, samples)
+
+    print(f"Saved total csv: {output_path}")
+    print(f"samples={len(samples)}")
+    print(f"positive={sum(s['target'] for s in samples)}")
+    print()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Prepare SUR dataset metadata."
+    )
+
+    mode = parser.add_mutually_exclusive_group(required=True)
+
+    mode.add_argument(
+        "-f",
+        "--folds",
+        action="store_true",
+        help="Create cross-validation folds.",
+    )
+
+    mode.add_argument(
+        "-t",
+        "--total",
+        action="store_true",
+        help="Create total.csv files for full training.",
+    )
+
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
+    args = parse_args()
+
     output_dir = Path(OUTPUT_DIR)
-    
-    clear_output_dir(output_dir)
 
     image_samples, audio_samples = collect_files()
 
     print(f"Images found: {len(image_samples)}")
     print(f"Audio found:  {len(audio_samples)}")
+    print()
 
-    create_group_splits(image_samples, output_dir / "image")
-    create_group_splits(audio_samples, output_dir / "audio")
+    if args.folds:
+        create_group_splits(image_samples, output_dir / "image" / "folds")
+        create_group_splits(audio_samples, output_dir / "audio" / "folds")
+
+    elif args.total:
+        create_total_csv(image_samples, output_dir / "image" / "total.csv")
+        create_total_csv(audio_samples, output_dir / "audio" / "total.csv")
