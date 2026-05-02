@@ -180,8 +180,9 @@ if __name__ == "__main__":
     print(f"Audio found:  {len(audio_samples)}")
     print()
 
-    # create split with full dataset for image training
+    # create split with full dataset for both data training
     create_group_splits(image_samples, output_dir / "image" / "folds")
+    create_group_splits(audio_samples, output_dir / "audio" / "folds")
 
     # split based on label
     create_total_csv(image_samples, output_dir / "image" / "total.csv")
