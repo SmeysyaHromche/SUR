@@ -56,7 +56,7 @@ class ImageHelper:
 
 
     def feature_extraction(self, img_path: str, is_augmentation: bool):
-        img = cv2.imread(img_path)  # [H, W, RGB]
+        img = cv2.imread(img_path)  # [H, W, BGR]
 
         if img is None:
             raise ValueError(f"Could not read image: {img_path}")

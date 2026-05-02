@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report, f1_score
 
 from .model import Model
 
@@ -34,5 +35,15 @@ class ImageBinaryClassifier(Model):
     def predict(self, X:np.ndarray):
         return self.model.predict(X)
 
-    def score(self, X:np.ndarray, y:np.ndarray):
-        return self.model.score(X, y)
+    def score(self, X:np.ndarray):
+        # TODO: ???
+        return self.model.score_samples(X)
+    
+    def validation(self):
+        if self.X_dev is None or self.y_dev is None:
+            return '', 0.0
+        self.y_pred = self.predict(self.X_dev)
+        _classification_report = classification_report(self.y_dev, self.y_pred)
+        _f1_score = f1_score(self.y_dev, self.y_pred)
+        self.log = f"{_classification_report} \nF1 : {_f1_score}"
+        return _f1_score

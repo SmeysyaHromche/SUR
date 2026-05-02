@@ -5,7 +5,7 @@ class AudioHelper:
     SR = 16_000
     SPEACH_START_PEAK_ENERGY = 20
     PRE_EMPHASIS = 0.95
-    N_MFCC = 13
+    N_MFCC = 16
 
     def __init__(self):
         pass
@@ -22,6 +22,7 @@ class AudioHelper:
         )
     
     def augmentation(self, y:np.ndarray) -> np.ndarray:
+        y = y.copy()
         # noise
         noise = np.random.normal(0, 0.002, len(y))
         y += noise
@@ -31,11 +32,11 @@ class AudioHelper:
         y *= gain
 
         # shift
-        shift = np.random.randint(
-            -int(0.03 * self.SR),
-            int(0.03 * self.SR)
-        )
-        y = np.roll(y, shift)
+        #shift = np.random.randint(
+        #    -int(0.03 * self.SR),
+        #    int(0.03 * self.SR)
+        #)
+        #y = np.roll(y, shift)
 
         return y
 
@@ -71,8 +72,8 @@ class AudioHelper:
         delta2 = lbr.feature.delta(mfcc, order=2)
 
         # combine: [n_mfcc + delta + delta2, T]
-        #features = np.vstack([mfcc, delta, delta2])
-        features = mfcc
+        features = np.vstack([mfcc, delta, delta2])
+        #features = mfcc
         features = features.T
 
         # normalization throw time

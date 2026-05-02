@@ -29,54 +29,59 @@ class BasePipeline:
         with open(path, "w") as f:
             f.write(txt)
 
-    def feature_extraction_from_dataset(self, path:Path, is_train:bool) -> Tuple[np.ndarray, np.ndarray]:
+    def feature_extraction_from_dataset(self, path:Path, is_train:bool) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         train_dataset = self.get_dataset_for_path(path)
-        X, y = train_dataset.feature_extraction_from_dataset(is_train)
-        return X, y
+        X, y, files_ids = train_dataset.feature_extraction_from_dataset(is_train)
+        return X, y, files_ids
     
-    def feature_extraction_from_fold_dataset(self, fold:Path) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def feature_extraction_from_fold_dataset(self, fold:Path) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray,]:
         fold_train_data = fold / "train.csv"
-        X_train, y_train = self.feature_extraction_from_dataset(fold_train_data, True)
+        X_train, y_train, files_ids_train = self.feature_extraction_from_dataset(fold_train_data, True)
 
         fold_dev_data = fold / "dev.csv"
-        X_dev, y_dev = self.feature_extraction_from_dataset(fold_dev_data, False)
+        X_dev, y_dev, files_ids_dev = self.feature_extraction_from_dataset(fold_dev_data, False)
 
-        return X_train, y_train, X_dev, y_dev
+        return X_train, y_train, files_ids_train, X_dev, y_dev, files_ids_dev
     
+    def fold_train(self, i:int, fold:Path):
+        field_log = f"\n=====================\nFold: {i}\n====================="
+
+        model = self.get_model()
+
+        X_train, y_train, files_ids_train, X_dev, y_dev, files_ids_dev = self.feature_extraction_from_fold_dataset(fold)
+
+        log, validation_object = model.train(
+            X_train=X_train, 
+            y_train=y_train, 
+            files_ids_train=files_ids_train,
+            X_dev = X_dev, 
+            y_dev = y_dev, 
+            files_ids_dev=files_ids_dev,
+            with_validation=True
+        )
+        field_log = field_log + f"\n{log}"
+        return field_log, validation_object
+
     def train(self, folds:List[Path]):
         # cross validation
-        f1_scores = []
+        validation_objects = []
+        logs = ''
         for i, fold in enumerate(folds):
-            print("=====================")
-            print(f"Fold: {i}")
-            print("=====================")
+            field_log, validation_object = self.fold_train(i, fold)
+            print(field_log)
+            logs = logs + f"\n{field_log}"
+            validation_objects.append(validation_object)
+            break
 
-            model = self.get_model()
-
-            X_train, y_train, X_dev, y_dev = self.feature_extraction_from_fold_dataset(fold)
-            continue
-
-            log, f1_score = model.train(X_train, y_train, X_dev = X_dev, y_dev = y_dev, with_validation=True)
-            f1_scores.append(f1_score)
-
-            print(log)
-            if self.config.is_save_validation_log:
-                log_path = Path(self.config.out) / "logs" / f"log_{self.get_model_subtype()}_model_{self.config.model_name}_fold_{i}.txt"
-                log_path.parent.mkdir(parents=True, exist_ok=True)
-                self.store_log(log_path, log)
-        
-        avg_f1_score = sum(f1_scores) / len(folds)
-        print()
-        print(f"Avg f1 score throw all folds: {avg_f1_score}")
-
+        model = None
         # train model on full data and store it
-        if not self.config.is_full_train:
-            return
-        
-        X, y = self.feature_extraction_from_dataset(self.total_data_path, True)
-        model = self.get_model()
-        model.train(X, y)
-        
-        model_path = Path(self.config.out) / "models" / f"{self.get_model_subtype()}_model_{self.config.model_name}.pkl"
-        model_path.parent.mkdir(parents=True, exist_ok=True)
-        joblib.dump(model.model, model_path)
+        if self.config.is_full_train:
+            X, y = self.feature_extraction_from_dataset(self.total_data_path, True)
+            model = self.get_model()
+            model.train(X, y)
+            
+            model_path = Path(self.config.out) / "models" / f"{self.get_model_subtype()}_model_{self.config.model_name}.pkl"
+            model_path.parent.mkdir(parents=True, exist_ok=True)
+            joblib.dump(model.model, model_path)
+
+        return model, logs, validation_objects

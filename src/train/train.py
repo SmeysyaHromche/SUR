@@ -23,6 +23,5 @@ class Train:
             return None
 
     def train(self) -> None:
-        print(self.config)
         pipeline = self.get_pipeline()
         pipeline.train()

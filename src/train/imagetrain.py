@@ -25,5 +25,15 @@ class ImageTrain(BasePipeline):
         return "img"
 
     def train(self):
-        super().train(self.folds)
-            
+        _, logs, f1_scores = super().train(self.folds)
+        
+        avg_f1_score = sum(f1_scores) / len(self.folds)
+        avg_f1_score_msg = f"Avg f1 score throw all folds: {avg_f1_score}"
+        print(avg_f1_score_msg)
+        logs = logs + avg_f1_score_msg
+
+        if self.config.is_save_validation_log:
+            log_path = Path(self.config.out) / "logs" / f"log_{self.get_model_subtype()}_model_{self.config.model_name}.txt"
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            self.store_log(log_path, logs)
+    
