@@ -23,22 +23,19 @@ class AudioDataset(SurDataset):
         for idx in range(len(self)):
             audio_path, label = self.samples[idx]
 
-            cnt_of_sample = 3 if label and is_train else 1
+            features = self.audio_helper.feature_extraction(
+                str(audio_path.resolve()),
+                is_augmentation=False
+            )
 
-            for aug_idx in range(cnt_of_sample):
-                features = self.audio_helper.feature_extraction(
-                    str(audio_path.resolve()),
-                    is_augmentation=(is_train and aug_idx > 0)
-                )
+            if len(features) == 0:
+                continue
 
-                if len(features) == 0:
-                    continue
+            file_id = f"{idx}"
 
-                file_id = f"{idx}_{aug_idx}"
-
-                X.extend(features)
-                y.extend([label] * len(features))
-                file_ids.extend([file_id] * len(features))
+            X.extend(features)
+            y.extend([label] * len(features))
+            file_ids.extend([file_id] * len(features))
 
         X = np.asarray(X, dtype=np.float32)
         y = np.asarray(y, dtype=np.int64)
