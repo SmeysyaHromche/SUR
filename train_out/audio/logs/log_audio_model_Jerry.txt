@@ -1,0 +1,244 @@
+============================================================================
+Audio Binary Classifier Model 'Jerry'
+============================================================================
+=====================================
+Cross Validation throw folds
+=====================================
+
+=====================
+Fold: 0
+=====================
+================================
+TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -39.09634017944336
+Dev avg log-likelihood: -37.656124114990234
+
+Train score mean: -39.09634017944336
+Train score std: 9.508642196655273
+Train score min: -69.88404083251953
+Train score max: -15.336416244506836
+
+Dev score mean: -37.656124114990234
+Dev score std: 10.187979698181152
+Dev score min: -74.38874816894531
+Dev score max: -16.49165916442871
+
+================================
+NON-TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -39.06324768066406
+Dev avg log-likelihood: -38.27099609375
+
+Train score mean: -39.06324768066406
+Train score std: 10.27698040008545
+Train score min: -89.27164459228516
+Train score max: -13.445833206176758
+
+Dev score mean: -38.27099609375
+Dev score std: 10.134456634521484
+Dev score min: -77.4131088256836
+Dev score max: -14.21982192993164
+
+================================
+BINARY GMM CLASSIFIER VALIDATION FILE
+================================
+
+threshold: -2.2
+
+TARGET FILES
+------------
+count: 10
+recall: 1.0
+score mean: -0.8936161994934082
+score std: 0.5616287589073181
+score min: -2.0985238552093506
+score max: -0.21037237346172333
+
+NON-TARGET FILES
+----------------
+count: 64
+recall: 0.890625
+score mean: -3.6389503479003906
+score std: 1.1473404169082642
+score min: -6.131221771240234
+score max: -1.0688716173171997
+
+SEPARATION
+----------
+target mean - non-target mean: 2.7453341484069824
+target GMM dev log-likelihood: -37.656124114990234
+non-target GMM dev log-likelihood: -38.27099609375
+
+CLASSIFICATION REPORT
+---------------------
+              precision    recall  f1-score   support
+
+  non-target       1.00      0.89      0.94        64
+      target       0.59      1.00      0.74        10
+
+    accuracy                           0.91        74
+   macro avg       0.79      0.95      0.84        74
+weighted avg       0.94      0.91      0.91        74
+
+F1: 0.7407407407407407
+
+=====================
+Fold: 1
+=====================
+================================
+TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -39.04408264160156
+Dev avg log-likelihood: -40.96786117553711
+
+Train score mean: -39.04408264160156
+Train score std: 9.820079803466797
+Train score min: -78.14263153076172
+Train score max: -16.45216178894043
+
+Dev score mean: -40.96786117553711
+Dev score std: 10.473014831542969
+Dev score min: -76.75886535644531
+Dev score max: -17.079313278198242
+
+================================
+NON-TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -39.04113006591797
+Dev avg log-likelihood: -39.15568542480469
+
+Train score mean: -39.04113006591797
+Train score std: 10.206673622131348
+Train score min: -85.71115112304688
+Train score max: -14.34758186340332
+
+Dev score mean: -39.15568542480469
+Dev score std: 10.28392219543457
+Dev score min: -91.9222183227539
+Dev score max: -14.230644226074219
+
+================================
+BINARY GMM CLASSIFIER VALIDATION FILE
+================================
+
+threshold: -2.2
+
+TARGET FILES
+------------
+count: 10
+recall: 0.9
+score mean: -1.5765992403030396
+score std: 0.34785783290863037
+score min: -2.4343159198760986
+score max: -1.199012041091919
+
+NON-TARGET FILES
+----------------
+count: 64
+recall: 1.0
+score mean: -4.411520957946777
+score std: 1.1367976665496826
+score min: -7.489165306091309
+score max: -2.302361249923706
+
+SEPARATION
+----------
+target mean - non-target mean: 2.8349218368530273
+target GMM dev log-likelihood: -40.96786117553711
+non-target GMM dev log-likelihood: -39.15568542480469
+
+CLASSIFICATION REPORT
+---------------------
+              precision    recall  f1-score   support
+
+  non-target       0.98      1.00      0.99        64
+      target       1.00      0.90      0.95        10
+
+    accuracy                           0.99        74
+   macro avg       0.99      0.95      0.97        74
+weighted avg       0.99      0.99      0.99        74
+
+F1: 0.9473684210526315
+
+=====================
+Fold: 2
+=====================
+================================
+TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -38.89228439331055
+Dev avg log-likelihood: -43.294498443603516
+
+Train score mean: -38.89228439331055
+Train score std: 9.758932113647461
+Train score min: -74.98652648925781
+Train score max: -11.375393867492676
+
+Dev score mean: -43.294498443603516
+Dev score std: 10.986297607421875
+Dev score min: -79.99041748046875
+Dev score max: -13.460644721984863
+
+================================
+NON-TARGET GMM VALIDATION
+================================
+Train avg log-likelihood: -39.11220169067383
+Dev avg log-likelihood: -40.37772750854492
+
+Train score mean: -39.11220169067383
+Train score std: 10.228842735290527
+Train score min: -88.36764526367188
+Train score max: -14.286208152770996
+
+Dev score mean: -40.37772750854492
+Dev score std: 10.54484748840332
+Dev score min: -90.58768463134766
+Dev score max: -14.720719337463379
+
+================================
+BINARY GMM CLASSIFIER VALIDATION FILE
+================================
+
+threshold: -2.2
+
+TARGET FILES
+------------
+count: 10
+recall: 0.7
+score mean: -1.9187244176864624
+score std: 0.45501646399497986
+score min: -2.5692975521087646
+score max: -1.363048791885376
+
+NON-TARGET FILES
+----------------
+count: 64
+recall: 0.984375
+score mean: -4.969328880310059
+score std: 1.7540451288223267
+score min: -9.528360366821289
+score max: -1.4907817840576172
+
+SEPARATION
+----------
+target mean - non-target mean: 3.0506043434143066
+target GMM dev log-likelihood: -43.294498443603516
+non-target GMM dev log-likelihood: -40.37772750854492
+
+CLASSIFICATION REPORT
+---------------------
+              precision    recall  f1-score   support
+
+  non-target       0.95      0.98      0.97        64
+      target       0.88      0.70      0.78        10
+
+    accuracy                           0.95        74
+   macro avg       0.91      0.84      0.87        74
+weighted avg       0.94      0.95      0.94        74
+
+F1: 0.7777777777777778
+=====================================
+Model Train on full data: successful
+=====================================
+Avg f1 score throw all folds: 0.8219623131903834

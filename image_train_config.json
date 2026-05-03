@@ -1,7 +1,7 @@
 {
     "model": "image",
     "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/image/",
-    "out": "/home/xkukht01/Dev/SUR/out/image/",
+    "out": "/home/xkukht01/Dev/SUR/train_out/image/",
     "model_name": "Tom",
     "is_full_train": true,
     "is_save_validation_log":true
