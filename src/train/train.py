@@ -13,7 +13,6 @@ class Train:
         self.config = TrainConfig.model_validate_json(config_path.read_text())
         
     def get_pipeline(self):
-        # TODO: add all pipelines
         pipe_type = self.config.model
         if pipe_type == self.IMAGE:
             return ImageTrainPipeline(self.config)

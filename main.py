@@ -1,5 +1,5 @@
 import argparse
-from src import Train
+from src import Train, Production
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -20,6 +20,9 @@ def main():
     if args.t:
         train = Train(args.path_to_config)
         train.train()
+    elif args.p:
+        production = Production(args.path_to_config)
+        production.run()
     else:
         pass
 

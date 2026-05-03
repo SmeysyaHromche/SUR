@@ -1,0 +1,8 @@
+{
+    "model": "image",
+    "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/image/total.csv",
+    "audio_target_model_path": "/home/xkukht01/Dev/SUR/train_out/audio/models/Jerry_target.pkl",
+    "audio_non_targte_model_path": "/home/xkukht01/Dev/SUR/train_out/audio/models/Jerry_nontarget.pkl",
+    "image_model_path": "/home/xkukht01/Dev/SUR/train_out/image/models/Tom.pkl",
+    "classification_out_path": "/home/xkukht01/Dev/SUR/image_out.txt"
+}
