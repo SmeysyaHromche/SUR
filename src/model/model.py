@@ -25,10 +25,10 @@ class Model:
         ) -> Tuple[str, float]:
         self.X_train = X_train
         self.y_train = y_train
-        self.file_ids_train = files_ids_train
+        self.files_ids_train = files_ids_train
         self.X_dev = X_dev
         self.y_dev = y_dev
-        self.file_ids_dev = files_ids_dev
+        self.files_ids_dev = files_ids_dev
 
         self.fit(self.X_train, self.y_train)
 
