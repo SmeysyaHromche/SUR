@@ -1,5 +1,4 @@
 import pandas as pd
-import torch
 
 from pathlib import Path
 
@@ -8,10 +7,7 @@ class SurDataset:
     def __init__(self, meta_dataset: Path):
         self.meta_dataset = meta_dataset
 
-        self.df = pd.read_csv(self.meta_dataset, header=None)
-
-        self.samples = self._filter_valid_files()
-        self.len = len(self.samples)
+        self.df = pd.read_csv(self.meta_dataset, header=None, skiprows=1)
 
     def get_expected_data_format(self) -> str:
         """
@@ -21,24 +17,11 @@ class SurDataset:
     
     def feature_extraction_from_dataset(self, is_train):
         raise NotImplementedError("Implement me")
+    
+    
+    def feature_extraction_for_evaluation(self):
+        raise NotImplementedError("Implement me")
 
     def is_valid_data_format(self, file: Path) -> bool:
         return file.is_file() and file.suffix == self.get_expected_data_format()
 
-    def _filter_valid_files(self):
-        valid = []
-
-        for _, row in self.df.iterrows():
-            path_str = row[0]
-            label = row[1]
-
-            file_path = Path(path_str)
-
-            if self.is_valid_data_format(file_path):
-                label = int(label)
-                valid.append((file_path, label))
-
-        return valid
-
-    def __len__(self) -> int:
-        return self.len

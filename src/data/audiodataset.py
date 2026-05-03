@@ -20,9 +20,13 @@ class AudioDataset(SurDataset):
         y = []
         file_ids = []
 
-        for idx in range(len(self)):
-            audio_path, label = self.samples[idx]
-
+        for idx, row in self.df.iterrows():
+            audio_path = Path(row[0])
+            label = int(row[1])
+            
+            if not self.is_valid_data_format(audio_path):
+                continue
+            
             features = self.audio_helper.feature_extraction(
                 str(audio_path.resolve()),
                 is_augmentation=False
@@ -42,3 +46,26 @@ class AudioDataset(SurDataset):
         file_ids = np.asarray(file_ids)
 
         return X, y, file_ids
+    
+    def feature_extraction_for_evaluation(self):
+        X = []
+        file_ids = []
+
+        for _, row in self.df.iterrows():
+            audio_path = Path(row[0])
+
+            if not self.is_valid_data_format(audio_path):
+                continue
+
+            audio_features = self.audio_helper.feature_extraction(
+                str(audio_path.resolve()),
+                False
+            )
+
+            X.extend(audio_features)
+            file_ids.extend([audio_path.stem] * len(audio_features))
+
+        X = np.asarray(X, dtype=np.float32)
+        file_ids = np.asarray(file_ids)
+
+        return X, file_ids

@@ -20,13 +20,16 @@ class ImageDataset(SurDataset):
         y = []
         file_ids = []
 
-        for idx in range(len(self)):
-            img_path, label = self.samples[idx]
+        for idx, row in self.df.iterrows():
+            img_path = Path(row[0])
+            label = int(row[1])
+
+            if not self.is_valid_data_format(img_path):
+                continue
 
             cnt_of_sample = 3 if label and is_train else 1
 
             for aug_idx in range(cnt_of_sample):
-
                 img_features = self.image_helper.feature_extraction(
                     str(img_path.resolve()),
                     is_train
@@ -43,3 +46,27 @@ class ImageDataset(SurDataset):
         file_ids = np.asarray(file_ids)
 
         return X, y, file_ids
+
+    def feature_extraction_for_evaluation(self):
+        X = []
+        file_ids = []
+
+        for _, row in self.df.iterrows():
+            img_path = Path(row[0])
+
+            if not self.is_valid_data_format(img_path):
+                continue
+
+            img_features = self.image_helper.feature_extraction(
+                str(img_path.resolve()),
+                False
+            )
+
+            X.append(img_features)
+
+            file_ids.append(img_path.stem)
+
+        X = np.asarray(X, dtype=np.float32)
+        file_ids = np.asarray(file_ids)
+
+        return X, file_ids
