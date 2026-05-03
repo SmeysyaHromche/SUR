@@ -3,10 +3,17 @@ import numpy as np
 from pathlib import Path
 from typing import Tuple, List
 
+from .trainconfig import TrainConfig
 from src.data import SurDataset
 from src.model import Model
 
 class BaseTrainPipeline:
+
+    def __init__(self, config:TrainConfig):
+        self.config = config
+        self.total_data_path = Path(self.config.total_data_csv_path)
+        folds_data_dir = Path(self.config.folds_dir_path)
+        self.folds = self.prepare_folds(folds_data_dir)
 
     def get_dataset_for_path(self, path) -> SurDataset:
         raise NotImplementedError("Implement me")

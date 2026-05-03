@@ -8,10 +8,7 @@ from src.model import AudioBinaryClassifier
 class AudioTrainPipeline(BaseTrainPipeline):
 
     def __init__(self, config:TrainConfig):
-        self.config = config
-        self.total_data_path = Path(self.config.data_path) / "total.csv"
-        folds_data_dir = Path(self.config.data_path) / "folds"
-        self.folds = self.prepare_folds(folds_data_dir)
+        super().__init__(config)
 
     def get_dataset_for_path(self, path) -> AudioDataset:
         return AudioDataset(path)
