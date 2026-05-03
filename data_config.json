@@ -1,0 +1,11 @@
+{
+    "source_data_dirs": [
+        "/home/xkukht01/Dev/SUR/data/target_train",
+        "/home/xkukht01/Dev/SUR/data/target_dev",
+        "/home/xkukht01/Dev/SUR/data/non_target_train",
+        "/home/xkukht01/Dev/SUR/data/non_target_dev"
+    ],
+    "output_data_dir": "/home/xkukht01/Dev/SUR/data/sur_data",
+    "trg_person_id": "m431",
+    "with_folds": true
+}
