@@ -2,7 +2,7 @@
     "model": "image",
     "data_path": "/home/xkukht01/Dev/SUR/data/sur_data/image/",
     "out": "/home/xkukht01/Dev/SUR/out/image/",
-    "model_name": "A",
-    "is_full_train": false,
-    "is_save_validation_log":false
+    "model_name": "Tom",
+    "is_full_train": true,
+    "is_save_validation_log":true
 }
