@@ -8,6 +8,7 @@ from sklearn.metrics import classification_report, f1_score
 class AudioBinaryClassifier(Model):
 
     def __init__(self, threshold: float = 1.55):
+        super().__init__()
         self.gmm_target = AudioGMM(n_components_gmm=16)
         self.gmm_non_target = AudioGMM(n_components_gmm=16)
         self.threshold = threshold
@@ -204,3 +205,7 @@ class AudioBinaryClassifier(Model):
         )
 
         return f1
+    
+    def self_store(self, out_path:str, model_name:str):
+        self.store_model(self.gmm_target, out_path, model_name + "_target")
+        self.store_model(self.gmm_target, out_path, model_name + "_nontarget")

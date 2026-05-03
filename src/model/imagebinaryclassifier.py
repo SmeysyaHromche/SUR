@@ -18,6 +18,7 @@ from .model import Model
 class ImageBinaryClassifier(Model):
 
     def __init__(self, n_components=0.9, C=0.8):
+        super().__init__()
         self.model = Pipeline([
             ("scaler", StandardScaler()),
             ("pca", PCA(n_components=n_components, random_state=42)),

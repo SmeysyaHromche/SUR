@@ -1,9 +1,12 @@
 import numpy as np
+import joblib
 
 from typing import Tuple
+from pathlib import Path
 
 class Model:
     def __init__(self):
+        self.model = None
         self.X_train = None
         self.y_train = None
         self.files_ids_train = None
@@ -38,6 +41,13 @@ class Model:
         
         return self.log, validation_object
 
+    def store_model(self, model, out_path:str, model_name:str) -> None:
+        if model is None:
+            return
+        model_path = Path(out_path) / "models" / f"{model_name}.pkl"
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump(model, model_path)
+        print(f'Model successfuly saved on path: {model_path}')
 
     def fit(self, X:np.ndarray, y:np.ndarray):
         NotImplementedError("Implement me")
@@ -50,3 +60,6 @@ class Model:
 
     def validation(self) -> Tuple[str, float]:
         NotImplementedError("Implement me")
+
+    def self_store(self, out_path:str, model_name:str):
+        self.store_model(self.model, out_path, model_name)

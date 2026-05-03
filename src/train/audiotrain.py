@@ -23,15 +23,23 @@ class AudioTrain(BasePipeline):
         return "audio"
 
     def train(self):
-        _, logs, f1_scores = super().train(self.folds)
+        prefix_log = (
+            "============================================================================\n"
+            f"Audio Binary Classifier Model '{self.config.model_name}'\n"
+            "============================================================================\n"
+        )
+        print(prefix_log)
+
+        model, logs, f1_scores = super().train(self.folds)
+        logs = prefix_log + logs
         
         avg_f1_score = sum(f1_scores) / len(self.folds)
         avg_f1_score_msg = f"Avg f1 score throw all folds: {avg_f1_score}"
-        #print(avg_f1_score_msg)
+        print(avg_f1_score_msg)
         logs = logs + avg_f1_score_msg
-
         if self.config.is_save_validation_log:
-            log_path = Path(self.config.out) / "logs" / f"log_{self.get_model_subtype()}_model_{self.config.model_name}.txt"
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-            self.store_log(log_path, logs)
+            self.store_log(logs, self.config.model_name)
+
+        if model is not None and self.config.is_save_validation_log:
+            model.self_store(self.config.out, self.config.model_name)
             

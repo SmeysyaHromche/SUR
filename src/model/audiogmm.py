@@ -14,6 +14,7 @@ class AudioGMM(Model):
         n_components_gmm = 8,
         covariance_type="diag"
     ):
+        super().__init__()
         self.model = Pipeline([
             ("scaler", StandardScaler()),
 

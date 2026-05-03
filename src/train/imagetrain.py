@@ -39,8 +39,9 @@ class ImageTrain(BasePipeline):
         avg_f1_score_msg = f"Avg f1 score throw all folds: {avg_f1_score}"
         print(avg_f1_score_msg)
         logs = logs + avg_f1_score_msg
-        self.store_log(logs, self.config.model_name)
-
         if self.config.is_save_validation_log:
-            self.store_model(model, self.config.model_name)
+            self.store_log(logs, self.config.model_name)
+
+        if model is not None and self.config.is_save_validation_log:
+            model.self_store(self.config.out, self.config.model_name)
     

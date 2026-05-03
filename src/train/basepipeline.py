@@ -24,19 +24,12 @@ class BasePipeline:
             raise FileNotFoundError(f"Folds directory not found: {folds_dir}")
         return sorted([d for d in folds_dir.iterdir() if d.is_dir()])
 
-
     def store_log(self, log:str, model_name:str) -> None:
         log_path =  Path(self.config.out) / "logs" / f"log_{self.get_model_subtype()}_model_{model_name}.txt"
         log_path.parent.mkdir(parents=True, exist_ok=True)
         with open(log_path, "w") as f:
             f.write(log)
             print(f'Log of training successfuly saved on path: {log_path}')
-
-    def store_model(self, model, model_name) -> None:
-        model_path = Path(self.config.out) / "models" / f"{self.get_model_subtype()}_model_{model_name}.pkl"
-        model_path.parent.mkdir(parents=True, exist_ok=True)
-        joblib.dump(model.model, model_path)
-        print(f'Model successfuly saved on path: {model_path}')
 
     def feature_extraction_from_dataset(self, path:Path, is_train:bool) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         train_dataset = self.get_dataset_for_path(path)
@@ -89,7 +82,7 @@ class BasePipeline:
 
         model = None
         model_full_train_log = (
-            "=====================================\n"
+            "\n=====================================\n"
             "Model Train on full data: "
         )
         model_full_train_status = ''
