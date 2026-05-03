@@ -1,7 +1,7 @@
 from pathlib import Path
 from .trainconfig import TrainConfig
-from .imagetrain import ImageTrain
-from .audiotrain import AudioTrain
+from .imagetrainpipeline import ImageTrainPipeline
+from .audiotrainpipeline import AudioTrainPipeline
 
 class Train:
 
@@ -16,9 +16,9 @@ class Train:
         # TODO: add all pipelines
         pipe_type = self.config.model
         if pipe_type == self.IMAGE:
-            return ImageTrain(self.config)
+            return ImageTrainPipeline(self.config)
         elif pipe_type == self.AUDIO:
-            return AudioTrain(self.config)
+            return AudioTrainPipeline(self.config)
         else:
             return None
 

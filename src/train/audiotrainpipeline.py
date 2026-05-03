@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from .basepipeline import BasePipeline
+from .basetrainpipeline import BaseTrainPipeline
 from .trainconfig import TrainConfig
 from src.data import AudioDataset
 from src.model import AudioBinaryClassifier
 
-class AudioTrain(BasePipeline):
+class AudioTrainPipeline(BaseTrainPipeline):
 
     def __init__(self, config:TrainConfig):
         self.config = config

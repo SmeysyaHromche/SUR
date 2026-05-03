@@ -1,4 +1,3 @@
-import joblib
 import numpy as np
 
 from pathlib import Path
@@ -7,7 +6,7 @@ from typing import Tuple, List
 from src.data import SurDataset
 from src.model import Model
 
-class BasePipeline:
+class BaseTrainPipeline:
 
     def get_dataset_for_path(self, path) -> SurDataset:
         raise NotImplementedError("Implement me")

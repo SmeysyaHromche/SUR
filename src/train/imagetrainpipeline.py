@@ -1,13 +1,11 @@
-import joblib
 from pathlib import Path
-from typing import List
 
-from .basepipeline import BasePipeline
+from .basetrainpipeline import BaseTrainPipeline
 from .trainconfig import TrainConfig
 from src.model import ImageBinaryClassifier
 from src.data import ImageDataset
 
-class ImageTrain(BasePipeline):
+class ImageTrainPipeline(BaseTrainPipeline):
 
     def __init__(self, config:TrainConfig):
         self.config = config

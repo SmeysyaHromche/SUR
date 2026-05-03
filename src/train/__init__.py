@@ -1,6 +1,6 @@
-from .audiotrain import AudioTrain
+from .audiotrainpipeline import AudioTrainPipeline
 from .train import Train
-from .imagetrain import ImageTrain
+from .imagetrainpipeline import ImageTrainPipeline
 from .trainconfig import TrainConfig
 
-__all__ = ["AudioTrain", "Train", "TrainConfig", "ImageTrain"]
+__all__ = ["AudioTrainPipeline", "Train", "TrainConfig", "ImageTrainPipeline"]
