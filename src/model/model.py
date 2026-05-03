@@ -52,10 +52,10 @@ class Model:
     def fit(self, X:np.ndarray, y:np.ndarray):
         NotImplementedError("Implement me")
     
-    def predict(self, X:np.ndarray):
+    def predict(self, X:np.ndarray, file_ids:np.ndarray|None=None):
         NotImplementedError("Implement me")
     
-    def score(self, X:np.ndarray, y:np.ndarray):
+    def score(self, X:np.ndarray, file_ids:np.ndarray|None=None):
         NotImplementedError("Implement me")
 
     def validation(self) -> Tuple[str, float]:
@@ -63,3 +63,6 @@ class Model:
 
     def self_store(self, out_path:str, model_name:str):
         self.store_model(self.model, out_path, model_name)
+
+    def self_load_weights(self, path_to_pkl:str):
+        raise NotImplementedError("Implement me")

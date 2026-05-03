@@ -6,11 +6,10 @@ from sklearn.metrics import classification_report, f1_score
 
 
 class AudioBinaryClassifier(Model):
-
-    def __init__(self, threshold: float = 1.55):
+    def __init__(self, threshold: float = -2.2):
         super().__init__()
-        self.gmm_target = AudioGMM(n_components_gmm=16)
-        self.gmm_non_target = AudioGMM(n_components_gmm=16)
+        self.gmm_target = AudioGMM(n_components_gmm=32)
+        self.gmm_non_target = AudioGMM(n_components_gmm=32)
         self.threshold = threshold
 
     def fit(self, X: np.ndarray, y: np.ndarray):
@@ -25,23 +24,26 @@ class AudioBinaryClassifier(Model):
         ll_non_target = self.gmm_non_target.score_samples(X)
 
         return ll_target - ll_non_target
+    
+    def score(self, X: np.ndarray, file_ids:np.ndarray|None=None):
+        frame_scores = self.score_samples(X)
 
-    def predict(self, X: np.ndarray):
-        scores = self.score_samples(X)
+        if file_ids is None:
+            return frame_scores
+
+        file_scores = []
+        unique_file_ids = np.array(list(dict.fromkeys(file_ids)))
+
+        for file_id in unique_file_ids:
+            file_mask = file_ids == file_id
+            file_score = np.mean(frame_scores[file_mask])
+            file_scores.append(file_score)
+
+        return np.asarray(file_scores, dtype=np.float32)
+
+    def predict(self, X: np.ndarray, file_ids:np.ndarray|None=None):
+        scores = self.score(X, file_ids)
         return (scores > self.threshold).astype(np.int64)
-
-    def predict_proba(self, X: np.ndarray):
-
-        scores = self.score_samples(X)
-
-        prob_target = 1.0 / (1.0 + np.exp(-scores))
-        prob_non_target = 1.0 - prob_target
-
-        return np.vstack([prob_non_target, prob_target]).T
-
-    def score(self, X: np.ndarray, y: np.ndarray):
-        y_pred = self.predict(X)
-        return np.mean(y_pred == y)
 
     def find_best_threshold(self, scores, y_true):
         best_threshold = None
@@ -72,53 +74,38 @@ class AudioBinaryClassifier(Model):
         non_target_train = self.X_train[self.y_train == 0]
         non_target_dev = self.X_dev[self.y_dev == 0]
 
-        # Target GMM validation, still frame-level
+        # Target GMM validation
         self.gmm_target.X_train = target_train
         self.gmm_target.X_dev = target_dev
 
         target_dev_ll = self.gmm_target.validation()
         target_gmm_log = self.gmm_target.log
 
-        # Non-target GMM validation, still frame-level
+        # Non-target GMM validation
         self.gmm_non_target.X_train = non_target_train
         self.gmm_non_target.X_dev = non_target_dev
 
         non_target_dev_ll = self.gmm_non_target.validation()
         non_target_gmm_log = self.gmm_non_target.log
 
+        # file level validation
 
-        # validation per file
-        frame_scores = self.score_samples(self.X_dev)
+        unique_file_ids = np.array(
+            list(dict.fromkeys(self.files_ids_dev))
+        )
 
-        file_scores = []
+        scores = self.score(self.X_dev, self.files_ids_dev)
+        y_pred = self.predict(self.X_dev, self.files_ids_dev)
+
         file_labels = []
-
-        unique_file_ids = np.unique(self.files_ids_dev)
 
         for file_id in unique_file_ids:
             file_mask = self.files_ids_dev == file_id
+            file_labels.append(self.y_dev[file_mask][0])
 
-            current_scores = frame_scores[file_mask]
-            current_labels = self.y_dev[file_mask]
-
-            file_score = np.mean(current_scores)
-            file_label = current_labels[0]
-
-            file_scores.append(file_score)
-            file_labels.append(file_label)
-
-        scores = np.asarray(file_scores, dtype=np.float32)
         y_true = np.asarray(file_labels, dtype=np.int64)
 
-        non_target_mask_for_norm = y_true == 0
-        score_mean = np.mean(scores[non_target_mask_for_norm])
-        score_std = np.std(scores[non_target_mask_for_norm]) + 1e-8
-
-        scores = (scores - score_mean) / score_std
-
-        y_pred = (scores > self.threshold).astype(np.int64)
-        #best_threshold, best_f1_by_search = self.find_best_threshold(scores, y_true)
-        #y_pred = (scores > best_threshold).astype(np.int64)
+        # metrics
 
         target_mask = y_true == 1
         non_target_mask = y_true == 0
@@ -157,6 +144,8 @@ class AudioBinaryClassifier(Model):
             y_pred,
             zero_division=0
         )
+
+        # log
 
         self.log = (
             "================================\n"
@@ -208,4 +197,11 @@ class AudioBinaryClassifier(Model):
     
     def self_store(self, out_path:str, model_name:str):
         self.store_model(self.gmm_target, out_path, model_name + "_target")
-        self.store_model(self.gmm_target, out_path, model_name + "_nontarget")
+        self.store_model(self.gmm_non_target, out_path, model_name + "_nontarget")
+    
+    def self_load_weights(self, path_to_pkl:str):
+        pass
+
+    def self_load_gmm_weights(self, path_to_target_pkl:str, path_to_nontarget_pkl:str):
+        self.gmm_target.self_load_weights(path_to_target_pkl)
+        self.gmm_non_target.self_load_weights(path_to_nontarget_pkl)

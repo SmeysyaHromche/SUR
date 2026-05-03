@@ -1,4 +1,5 @@
 import numpy as np
+import joblib
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -33,12 +34,11 @@ class ImageBinaryClassifier(Model):
     def fit(self, X:np.ndarray, y:np.ndarray):
         self.model.fit(X, y)
 
-    def predict(self, X:np.ndarray):
+    def predict(self, X:np.ndarray, file_ids:np.ndarray|None=None):
         return self.model.predict(X)
 
-    def score(self, X:np.ndarray):
-        # TODO: ???
-        return self.model.score_samples(X)
+    def score(self, X:np.ndarray, file_ids:np.ndarray|None=None):
+        return self.model.decision_function(X)
     
     def validation(self):
         if self.X_dev is None or self.y_dev is None:
@@ -48,3 +48,7 @@ class ImageBinaryClassifier(Model):
         _f1_score = f1_score(self.y_dev, self.y_pred)
         self.log = f"{_classification_report} \nF1 : {_f1_score}"
         return _f1_score
+    
+    
+    def self_load_weights(self, path_to_pkl:str):
+        self.model = joblib.load(path_to_pkl)

@@ -1,4 +1,5 @@
 import numpy as np
+import joblib
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -68,3 +69,6 @@ class AudioGMM(Model):
         )
 
         return dev_ll
+    
+    def self_load_weights(self, path_to_pkl:str):
+        self.model = joblib.load(path_to_pkl)
