@@ -71,12 +71,11 @@ class BasePipeline:
             print(field_log)
             logs = logs + f"\n{field_log}"
             validation_objects.append(validation_object)
-            break
 
         model = None
         # train model on full data and store it
         if self.config.is_full_train:
-            X, y = self.feature_extraction_from_dataset(self.total_data_path, True)
+            X, y, _ = self.feature_extraction_from_dataset(self.total_data_path, True)
             model = self.get_model()
             model.train(X, y)
             
