@@ -1,4 +1,5 @@
 # author: Myron Kukhta (xkukht01)
+
 import csv
 
 from pathlib import Path
@@ -8,6 +9,9 @@ from typing import Tuple, List, Dict, Any
 from .dataconfig import DataConfig
 
 class DataSplitter:
+    """
+    Provides the logic for preparing the dataset for training and evaluation
+    """
 
     def __init__(self, config_path:str):
         config_path = Path(config_path)
@@ -21,8 +25,6 @@ class DataSplitter:
     ]
 
     TARGET_ID = "m431"
-
-    OUTPUT_DIR = "/home/xkukht01/Dev/SUR/data/sur_data"
 
     N_SPLITS = 3
     RANDOM_STATE = 42

@@ -1,7 +1,12 @@
+# author: Myron Kukhta (xkukht01)
+
 import librosa as lbr
 import numpy as np
 
 class AudioHelper:
+    """
+    A helper class for working with audio data
+    """
     SR = 16_000
     SPEACH_START_PEAK_ENERGY = 20
     PRE_EMPHASIS = 0.95
@@ -21,11 +26,7 @@ class AudioHelper:
             window="hamming"
         )
 
-    def feature_extraction(self, audio_path: str, is_augmentation: bool):
-        """
-        Речь это комбинация частот
-        Нужно выделить те частоты, которые человек слышит и различает говорящих
-        """
+    def feature_extraction(self, audio_path: str, is_augmentation: bool) -> None:
         y, _ = lbr.load(  # [time_in_sec * SR] amplituda score
             audio_path, 
             sr=self.SR, 

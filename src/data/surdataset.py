@@ -1,8 +1,13 @@
+# author: Myron Kukhta (xkukht01)
+
 import pandas as pd
 
 from pathlib import Path
 
 class SurDataset:
+    """
+    A base class for data flow
+    """
 
     def __init__(self, meta_dataset: Path):
         self.meta_dataset = meta_dataset

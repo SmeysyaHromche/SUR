@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from .audiodataset import AudioDataset
 from .audiohelper import AudioHelper
 from .dataconfig import DataConfig

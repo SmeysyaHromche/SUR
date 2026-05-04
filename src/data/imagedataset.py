@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 
 from pathlib import Path
@@ -6,6 +8,10 @@ from .surdataset import SurDataset
 from .imagehelper import ImageHelper
 
 class ImageDataset(SurDataset):
+    """
+    Provides the logic for reading image data and extracting useful features
+    """
+    
     PNG_FORMAT = ".png"
 
     def __init__(self, meta_dataset: Path):
@@ -26,9 +32,11 @@ class ImageDataset(SurDataset):
 
             if not self.is_valid_data_format(img_path):
                 continue
-
+            
+            
             cnt_of_sample = 3 if label and is_train else 1
 
+            # artificial dataset expansion for target data during training
             for aug_idx in range(cnt_of_sample):
                 img_features = self.image_helper.feature_extraction(
                     str(img_path.resolve()),

@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 
 from pathlib import Path
@@ -6,6 +8,9 @@ from .surdataset import SurDataset
 from .audiohelper import AudioHelper
 
 class AudioDataset(SurDataset):
+    """
+    Provides the logic for reading speech recordings and extracting useful features
+    """
     WAV_FORMAT = ".wav"
 
     def __init__(self, meta_dataset: Path):
@@ -15,7 +20,7 @@ class AudioDataset(SurDataset):
     def get_expected_data_format(self) -> str:
         return self.WAV_FORMAT
 
-    def feature_extraction_from_dataset(self, is_train):
+    def feature_extraction_from_dataset(self, is_train:bool) -> None:
         X = []
         y = []
         file_ids = []
