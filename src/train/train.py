@@ -1,10 +1,14 @@
+# author: Myron Kukhta (xkukht01)
+
 from pathlib import Path
 from .trainconfig import TrainConfig
 from .imagetrainpipeline import ImageTrainPipeline
 from .audiotrainpipeline import AudioTrainPipeline
 
 class Train:
-
+    """
+    Entry point of train mode.
+    """
     IMAGE = "image"
     AUDIO = "audio"
 

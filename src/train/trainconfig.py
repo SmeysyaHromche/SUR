@@ -1,6 +1,12 @@
+# author: Myron Kukhta (xkukht01)
+
 from pydantic import BaseModel
 
 class TrainConfig(BaseModel):
+    """
+    A scheme for configuration for train mode.
+    """
+
     model: str
     total_data_csv_path: str
     folds_dir_path: str

@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 
 from pathlib import Path
@@ -8,6 +10,9 @@ from src.data import SurDataset
 from src.model import Model
 
 class BaseTrainPipeline:
+    """
+    A base class for train pipeline of binary classifier.
+    """
 
     def __init__(self, config:TrainConfig):
         self.config = config

@@ -1,4 +1,4 @@
-from pathlib import Path
+# author: Myron Kukhta (xkukht01)
 
 from .basetrainpipeline import BaseTrainPipeline
 from .trainconfig import TrainConfig
@@ -6,6 +6,9 @@ from src.model import ImageBinaryClassifier
 from src.data import ImageDataset
 
 class ImageTrainPipeline(BaseTrainPipeline):
+    """
+    Provide the logic for production pipeline of image binary classifier.
+    """
 
     def __init__(self, config:TrainConfig):
         super().__init__(config)

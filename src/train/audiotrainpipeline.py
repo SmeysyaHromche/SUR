@@ -1,4 +1,4 @@
-from pathlib import Path
+# author: Myron Kukhta (xkukht01)
 
 from .basetrainpipeline import BaseTrainPipeline
 from .trainconfig import TrainConfig
@@ -6,6 +6,9 @@ from src.data import AudioDataset
 from src.model import AudioBinaryClassifier
 
 class AudioTrainPipeline(BaseTrainPipeline):
+    """
+    Provide the logic for train pipeline of audio binary classifier.
+    """
 
     def __init__(self, config:TrainConfig):
         super().__init__(config)

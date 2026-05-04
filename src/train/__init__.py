@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from .audiotrainpipeline import AudioTrainPipeline
 from .train import Train
 from .imagetrainpipeline import ImageTrainPipeline
