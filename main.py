@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import argparse
 from src import Train, Production, DataSplitter
 
