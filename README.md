@@ -26,11 +26,10 @@ project/
 |   |-- model/          # model implementations and components
 |   |-- production/     # production inference pipelines
 |   |-- train/          # training pipelines
-|-- models_output/
-|   |-- audio_out.txt   # audio evaluation results
-|   |-- image_out.txt   # image evaluation results
 |-- train_out/          # trained models, logs, and .pkl files
 |-- documentation.pdf
+|-- eval_audio_out.txt  # evaluation of audio
+|-- eval_image_out.txt  # evaluation of image
 |-- main.py             # project entry point
 |-- README.md           # project documentation
 |-- requirements.txt    # project dependencies
@@ -40,7 +39,7 @@ In addition to the source code, the repository also contains:
 
 * example configuration files (`configs/`),
 * training outputs (`train_out/`),
-* evaluation outputs (`models_output/`).
+* evaluation outputs (`eval_audio_out.txt`, `eval_image_out.txt`).
 
 ---
 
