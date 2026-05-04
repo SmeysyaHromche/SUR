@@ -1,136 +1,191 @@
-# SUR
-SUR
-Zadání projektu do SUR 2025/2026
-================================
+# SUR 2025/2026
 
-Bodové ohodnocení:   25 bodů
+Binary classification project for image and audio data using classical machine learning approaches.
+The system supports:
 
-Úkolem je natrénovat detektor jedné osoby z obrázku obličeje a hlasové
-nahrávky. Trénovací vzory jsou k dispozici v archívu na adrese:
+* image classification,
+* audio classification,
+* metadata preparation,
+* cross-validation,
+* model training,
+* production inference pipelines.
 
-https://www.fit.vutbr.cz/study/courses/SUR/public/projekt_2025-2026/SUR_projekt2025-2026.zip
+---
 
-Tento archív obsahuje adresáře:
+# Implementation
 
-target_train
-target_dev
+The project was implemented in Python using an object-oriented approach and standard machine learning frameworks, including `scikit-learn`, as well as libraries for mathematical computations (`NumPy`, `Pandas`), image processing (`OpenCV`), and audio processing (`Librosa`). Additional utilities and helper modules were used to organize the training and production pipelines.
 
-kde jsou trénovací vzory pro detekovanou osobu ve formátu PNG a WAV,
+## Project Structure
 
-v adresářích:
+```text
+project/
+|-- configs/            # example configuration files
+|-- doc/                # project documentation
+|-- src/                # project source code
+|   |-- data/           # data preparation and processing
+|   |-- model/          # model implementations and components
+|   |-- production/     # production inference pipelines
+|   |-- train/          # training pipelines
+|-- models_output/
+|   |-- audio_out.txt   # audio evaluation results
+|   |-- image_out.txt   # image evaluation results
+|-- train_out/          # trained models, logs, and .pkl files
+|-- main.py             # project entry point
+|-- README.md           # project documentation
+|-- requirements.txt    # project dependencies
+```
 
-non_target_train
-non_target_dev
+In addition to the source code, the repository also contains:
 
-jsou potom negativní příklady. Pro trénování detektorů je dovoleno použít
-pouze tato poskytnutá data. NENÍ POVOLENO jakékoli využití jiných externích
-řečových či obrázkových dat, jakožto i použití již předtrénovaných modelů
-(např. pro extrakci reprezentací (embeddings) obličejů nebo hlasu). Tato
-data ale můžete "augmentovat" tak, že vytvoříte nové trénovací vzory např.
-přidáním šumu do nahrávek či obrázků, rotací, posunutím či změnou velikosti
-obrázků, změnou rychlosti řeči apod.
+* example configuration files (`configs/`),
+* training outputs (`train_out/`),
+* evaluation outputs (`models_output/`).
 
-Důležitým cílem projektu je schopnost systému generalizovat na neznámá
-data i při použití velmi omezeného množství poskytnutých trrénovacích dat.
-Evaluační data, která budou zveřejněna později (viz níže), budou obsahovat
-vzory s odlišnými vlastnostmi (např. šum, změny kvality obrazu apod.),
-které se nemusí přesně vyskytovat v trénovacích datech. Při návrhu systému
-proto zvažte:
- - vhodné techniky augmentace dat,
- - volbu modelu s ohledem na omezené množství dat,
- - omezení přetrénování (overfittingu).
+---
 
-Tyto aspekty musí být jasně popsány v dokumentaci (viz níže).
+# Installation and Startup
 
-Na přednášce při zadávání projektu si předvedeme jednoduché baseline systémy
-(MFCC + GMM pro audio, lineární klasifikátor pro obrázky). Pro dosažení
-plného bodového hodnocení nestačí tyto systémy pouze reprodukovat nebo mírně
-upravit. Očekává se vlastní přístup reflektující výše uvedené požadavky.
+This project is primarily designed for Linux environments.
 
-Do adresářů *_train a *_dev byla trénovací data rozdělena především pro
-účely trénování a testování již zmíněných "baseline" systémů. Z důvodu
-omezeného rozsahu poskytnutých dat ovšem takové rozdělení nebude optimální
-a pro dosažení plného bodového hodnocení bude nutné použít vhodnou validační
-strategii (např. křížovou validaci umožňující efektivně trénovat i testovat
-na všech datech). Pro tento účel může být užitečné respektovat informace
-o tom, které trénovací vzory patří stejné osobě a zda byly pořízeny v rámci
-jednoho nahrávacího sezení. Jméno souboru pro každý vzor je rozděleno do
-polí pomocí podtržítek (např. f401_01_f21_i0_0.png), kde první pole (f401)
-označuje identitu osoby a druhé pole označuje číslo nahrávacího sezení (01).
-Pro trénování doporučujeme použít křížovou validaci respektující strukturu
-dat (např. podle nahrávacích sezení, tj. aby vzory z jednoho sezení nebyly
-současně v trénovacích i validačních datech). Zvolený způsob evaluace během
-vývoje musí být popsán a zdůvodněn v dokumentaci.
+## Create Python Virtual Environment
 
-Ostrá evaluační data, na kterých budou vaše systémy vyhodnoceny, budou
-k dispozici v neděli 3. května ráno. Tato data budou obsahovat řádově
-stovky souborů ke zpracování. Vaším úkolem bude tato data automaticky
-zpracovat vašimi systémy (věříme Vám, že nebudete podvádět a dívat se na
-obrázky či poslouchat nahrávky) a nahrát soubory s výsledky do informačního
-systému (IS). Soubor s výsledky bude ASCII se třemi poli na řádku oddělenými
-mezerou. Tato pole budou obsahovat popořadě následující údaje:
- - jméno segmentu (jméno souboru bez přípony .wav či .png)
- - číselné skóre, o kterém bude platit, že čím větší má hodnotu, tím si je
-   systém jistější, že se jedná o hledanou osobu
- - tvrdé rozhodnutí: číslo 1 pro hledanou osobu, jinak 0. Toto rozhodnutí
-   proveďte pro předpoklad, že apriorní pravděpodobnost výskytu hledané
-   osoby v každém testovaném vzoru je 0,5
+```bash
+python3 -m venv venv
+```
 
-V jakém programovacím jazyce budete implementovat váš detektor či pomocí
-jakých nástrojů budete data zpracovávat, záleží jen na Vás. Každá skupina
-musí odevzdat alespoň:
- - jeden systém založený pouze na obrazových datech,
- - jeden systém založený pouze na audio datech,
- - jeden systém kombinující obě modality (multimodální fúze).
+## Activate Environment
 
-Zvolený způsob kombinace modalit (např. na úrovni příznaků nebo skóre) musí
-být popsán a zdůvodněn v dokumentaci. Odevzdat můžete i více souborů
-s výsledky, maximálně však námi bude zpracováno 6 takových souborů. Soubory
-s výsledky můžete do pondělí 4. května 23:59 nahrávat do IS. Klíč se
-správnými odpověďmi bude zveřejněn 5. května. Na poslední přednášce
-6. května 2026 bychom měli analyzovat Vaše výsledky a řešení.
+```bash
+source venv/bin/activate
+```
 
-Na tomto projektu budete pracovat ve skupinách (1 až 2 lidé), do kterých se
-můžete přihlásit v IS. Jména souborů s výsledky pro jednotlivé systémy volte
-tak, aby se podle nich dalo poznat, o jaký systém se jedná (např. audio_GMM,
-image_linear). Každá skupina nahraje všechny soubory s výsledky zabalené do
-jednoho ZIP archívu se jménem login1_login2.zip či login1.zip, podle toho,
-kolik Vás bude ve skupině. Kromě souborů s výsledky bude archív obsahovat
-také adresář SRC/, do kterého uložíte soubory se zdrojovými kódy
-implementovaných systémů.
+## Install Dependencies
 
-Dále bude archív obsahovat soubor dokumentace.pdf, který bude v českém,
-slovenském nebo anglickém jazyce popisovat Vaše řešení. Dokumentace
-(cca 3 strany A4) musí obsahovat:
- - popis navržených systémů (audio, obraz, multimodální),
- - popis použité validační strategie,
- - způsob řešení generalizace a omezení přetrénování.
+```bash
+pip install -r requirements.txt
+```
 
-Dokumentace musí umožnit pochopit, proč byl systém navržen právě tímto
-způsobem, nikoli pouze jak je implementován. Důraz věnujte úvahám vedoucím
-k finálnímu návrhu systému: jak jste systémy během jejich vývoje
-vyhodnocovali a které techniky či rozhodnutí se pozitivně projevily
-na úspěšnosti systému. Tento dokument bude také popisovat, jak získat Vaše
-výsledky pomocí přiloženého kódu. Uveďte, jak kódy zkompilovat, jak systémy
-spustit, kde hledat výsledné soubory a jaké externí nástroje je nutné
-instalovat a použít.
+After completing these steps, the project will be ready for use.
 
-Do ZIP archívu prosím nepřikládejte evaluační data!
+The system supports several operating modes:
 
-Součástí hodnocení bude krátká ústní obhajoba po odevzdání projektu, která
-proběhne v prvních týdnech zkouškového období (časové sloty budou
-upřesněny). Studenti by měli být schopni vysvětlit návrh svého řešení
-a odpovědět na dotazy k použitým metodám.
+* data preparation,
+* training,
+* production inference.
 
-Hodnocení:
-Plný počet bodů (25) získá řešení, které:
- - správně načítá data a produkuje výsledky,
- - obsahuje funkční systémy pro obraz, audio i jejich kombinaci,
- - používá vhodnou validační strategii,
- - reflektuje problém generalizace a omezeného množství dat,
- - obsahuje kvalitní dokumentaci umožňující reprodukci a pochopení,
- - je úspěšně prezentováno u ústní obhajoby.
+For detailed CLI information:
 
-V případě nesplnění některých požadavků bude bodové hodnocení sníženo.
+```bash
+python3 main.py --help
+```
 
-Poslední modifikace: 7. dubna 2026, Lukáš Burget
+---
+
+# Data Preparation Mode
+
+This mode generates a metadata map of the dataset and currently supports only `.wav` and `.png` files.
+
+The program automatically:
+
+* separates data by modality (image/audio),
+* generates `.csv` files with detected samples,
+* assigns labels when possible.
+
+When extended mode is enabled, the system additionally creates:
+
+* 3-fold cross-validation splits,
+* separate CSV files for each fold.
+
+## Launch
+
+```bash
+python3 main.py -d [PATH_TO_CONFIG]
+```
+
+The command expects a configuration file in JSON format.
+
+Example configuration files can be found in the `configs/` directory.
+
+## Configuration Parameters
+
+| Parameter          | Type           | Description                                           |
+| ------------------ | -------------- | ----------------------------------------------------- |
+| `source_data_dirs` | `list[string]` | Paths to dataset directories.                         |
+| `output_data_dir`  | `string`       | Output directory for generated metadata.              |
+| `trg_person_id`    | `string`       | Target person ID used for labeling (example: `m431`). |
+| `with_folds`       | `boolean`      | Enables generation of cross-validation folds.         |
+
+---
+
+# Training Mode
+
+This mode assumes that the metadata preparation step has already been completed.
+
+The system:
+
+* trains the selected model,
+* performs evaluation,
+* outputs metrics to the command line.
+
+Supported functionality:
+
+* cross-validation,
+* full dataset training,
+* model weight saving,
+* log exporting.
+
+## Launch
+
+```bash
+python3 main.py -t [PATH_TO_CONFIG]
+```
+
+The command expects a JSON configuration file.
+
+## Configuration Parameters
+
+| Parameter                | Type      | Description                                 |
+| ------------------------ | --------- | ------------------------------------------- |
+| `model`                  | `string`  | Classifier type: `"audio"` or `"image"`.    |
+| `total_data_csv_path`    | `string`  | The path to the `CSV` file with the total samples of actual type of data generated in `-d` mode.             |
+| `folds_dir_path`         | `string`  | The path to the directory with all folds separations generated in `-d` mode.         |
+| `out`                    | `string`  | The path to the directory where will be stored model `.pkl` and logs.       |
+| `model_name`             | `string`  | ID for actual model running, only for logs and better separability.          |
+| `is_full_train`          | `boolean` | Enables final training on the full dataset. |
+| `is_save_validation_log` | `boolean` | Enables saving cross-validation logs.       |
+
+---
+
+# Production Mode
+
+This mode performs inference using trained models.
+
+The metadata preparation step must already be completed before execution.
+
+The system:
+
+* loads trained models,
+* classifies input samples,
+* generates output reports compatible with the expected evaluation format.
+
+## Launch
+
+```bash
+python3 main.py -p [PATH_TO_CONFIG]
+```
+
+The command expects a JSON configuration file.
+
+Only the paths to the required model weights must be specified depending on the selected classifier.
+
+## Configuration Parameters
+
+| Parameter                     | Type     | Description                                        |
+| ----------------------------- | -------- | -------------------------------------------------- |
+| `model`                       | `string` | Classifier type: `"audio"` or `"image"`.           |
+| `data_path`                   | `string` | The path to the `CSV` file with the total samples of actual type of data generated in `-d` mode. |
+| `audio_target_model_path`     | `string` | The path to the `.pkl` file of weights of GMM for target audio.             |
+| `audio_non_target_model_path` | `string` | The path to the `.pkl` file of weights of GMM for nontarget audio.         |
+| `image_model_path`            | `string` |  The path to the `.pkl` file of weights of image classifier.           |
+| `classification_out_path`     | `string` | Output path for classification report `.txt` file. |
