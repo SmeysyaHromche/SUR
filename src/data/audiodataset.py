@@ -20,7 +20,7 @@ class AudioDataset(SurDataset):
     def get_expected_data_format(self) -> str:
         return self.WAV_FORMAT
 
-    def feature_extraction_from_dataset(self, is_train:bool) -> None:
+    def feature_extraction_from_dataset(self, is_train:bool):
         X = []
         y = []
         file_ids = []

@@ -26,7 +26,7 @@ class AudioHelper:
             window="hamming"
         )
 
-    def feature_extraction(self, audio_path: str, is_augmentation: bool) -> None:
+    def feature_extraction(self, audio_path: str, is_augmentation: bool):
         y, _ = lbr.load(  # [time_in_sec * SR] amplituda score
             audio_path, 
             sr=self.SR, 
