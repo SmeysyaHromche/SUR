@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from .productionconfig import ProductionConfig
 from .baseproductionpipeline import BaseProductionPipeline
 
@@ -5,6 +7,10 @@ from src.data import ImageDataset
 from src.model import ImageBinaryClassifier
 
 class ImageProductionPipeline(BaseProductionPipeline):
+    """
+    Provide the logic for production pipeline of image binary classifier.
+    """
+
     def __init__(self, config:ProductionConfig):
         super().__init__(config)
         self.image_dataset = ImageDataset(self.config.data_path)

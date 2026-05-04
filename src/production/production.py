@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from pathlib import Path
 
 from .audioproductionpipeline import AudioProductionPipeline
@@ -5,6 +7,9 @@ from .imageproductionpipeline import ImageProductionPipeline
 from .productionconfig import ProductionConfig
 
 class Production:
+    """
+    Entry point of production mode.
+    """
     IMAGE = "image"
     AUDIO = "audio"
     

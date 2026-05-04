@@ -1,9 +1,14 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 
 from .productionconfig import ProductionConfig
 from src.model import Model
 
 class BaseProductionPipeline:
+    """
+    A base class for production pipeline of binary classifier.
+    """
     def __init__(self, config:ProductionConfig):
         self.config = config
     

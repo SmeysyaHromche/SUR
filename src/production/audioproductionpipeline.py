@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from .productionconfig import ProductionConfig
 from .baseproductionpipeline import BaseProductionPipeline
 
@@ -5,6 +7,10 @@ from src.data import AudioDataset
 from src.model import AudioBinaryClassifier
 
 class AudioProductionPipeline(BaseProductionPipeline):
+    """
+    Provide the logic for production pipeline of audio binary classifier.
+    """
+
     def __init__(self, config:ProductionConfig):
         super().__init__(config)
         self.image_dataset = AudioDataset(self.config.data_path)
