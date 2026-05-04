@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 import joblib
 
@@ -9,10 +11,14 @@ from .model import Model
 
 
 class AudioGMM(Model):
+    """
+    Component of audio speach classifier. 
+    Simple GMM model.
+    """
 
     def __init__(
         self,
-        n_components_gmm = 8,
+        n_components_gmm = 32,
         covariance_type="diag"
     ):
         super().__init__()

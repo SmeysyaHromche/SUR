@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 from .audiogmm import AudioGMM
 from .audiobinaryclassifier import AudioBinaryClassifier
 from .model import Model

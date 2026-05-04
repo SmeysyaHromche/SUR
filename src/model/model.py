@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 import joblib
 
@@ -5,6 +7,9 @@ from typing import Tuple
 from pathlib import Path
 
 class Model:
+    """
+    Base class for classifier model.
+    """
     def __init__(self):
         self.model = None
         self.X_train = None

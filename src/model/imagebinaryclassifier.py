@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 import joblib
 
@@ -9,14 +11,12 @@ from sklearn.metrics import classification_report, f1_score
 
 from .model import Model
 
-# Helper for model interpretation
-# support: count of data
-# recall: TP / (TP + FN)
-# precision: TP / (TP + FP)
-# F1-scroe: how good model (0: bad, 1: goat)
-
 
 class ImageBinaryClassifier(Model):
+    """
+    Classifier for image data. 
+    Simple Linear SVC with Standard Scaler and PCA prefix.
+    """
 
     def __init__(self, n_components=0.9, C=0.8):
         super().__init__()

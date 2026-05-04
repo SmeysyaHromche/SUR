@@ -1,3 +1,5 @@
+# author: Myron Kukhta (xkukht01)
+
 import numpy as np
 
 from .model import Model
@@ -6,10 +8,15 @@ from sklearn.metrics import classification_report, f1_score
 
 
 class AudioBinaryClassifier(Model):
+    """
+    Classifier for audio speach data. 
+    Combination of two GMMs with Log-Likelihood Ratio Decision.
+    """
+
     def __init__(self, threshold: float = -2.2):
         super().__init__()
-        self.gmm_target = AudioGMM(n_components_gmm=32)
-        self.gmm_non_target = AudioGMM(n_components_gmm=32)
+        self.gmm_target = AudioGMM()
+        self.gmm_non_target = AudioGMM()
         self.threshold = threshold
 
     def fit(self, X: np.ndarray, y: np.ndarray):
@@ -32,7 +39,9 @@ class AudioBinaryClassifier(Model):
             return frame_scores
 
         file_scores = []
-        unique_file_ids = np.array(list(dict.fromkeys(file_ids)))
+        unique_file_ids = np.array(
+            list(dict.fromkeys(file_ids))
+        )
 
         for file_id in unique_file_ids:
             file_mask = file_ids == file_id
@@ -45,27 +54,7 @@ class AudioBinaryClassifier(Model):
         scores = self.score(X, file_ids)
         return (scores > self.threshold).astype(np.int64)
 
-    def find_best_threshold(self, scores, y_true):
-        best_threshold = None
-        best_f1 = -1.0
-
-        thresholds = np.linspace(scores.min(), scores.max(), 500)
-
-        for threshold in thresholds:
-            y_pred = (scores > threshold).astype(np.int64)
-
-            f1 = f1_score(
-                y_true,
-                y_pred,
-                zero_division=0
-            )
-
-            if f1 > best_f1:
-                best_f1 = f1
-                best_threshold = threshold
-
-        return best_threshold, best_f1
-
+    
     def validation(self):
         # Split train/dev by frame labels
         target_train = self.X_train[self.y_train == 1]
@@ -89,7 +78,6 @@ class AudioBinaryClassifier(Model):
         non_target_gmm_log = self.gmm_non_target.log
 
         # file level validation
-
         unique_file_ids = np.array(
             list(dict.fromkeys(self.files_ids_dev))
         )
